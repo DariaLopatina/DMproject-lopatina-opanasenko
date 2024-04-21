@@ -11,8 +11,6 @@ def generate_matrix(n, p, k):
 
     return adj_matrix
 
-
-
 class kruskalalgorithm:
     def __init__(self, adj_matrix, n):
         self.adj_matrix = adj_matrix
@@ -27,17 +25,10 @@ class kruskalalgorithm:
 
         for i in range(self.len):
             for j in range(i + 1, self.len):
-                if all(self.visited):
-                    if not ((i,j) in self.result_edge) and self.adj_matrix[i][j] != 0:
-                        if self.adj_matrix[i][j] < min_weight:
-                            min_weight = self.adj_matrix[i][j]
-                            min_edge = (i, j)
-
-                else:
-                    if not (self.visited[i] and self.visited[j]) and self.adj_matrix[i][j] != 0:
-                        if self.adj_matrix[i][j] < min_weight:
-                            min_weight = self.adj_matrix[i][j]
-                            min_edge = (i, j)
+                if (not (self.visited[i] and self.visited[j]) or not ((i,j) in self.result_edge)) and self.adj_matrix[i][j] != 0:
+                    if self.adj_matrix[i][j] < min_weight:
+                        min_weight = self.adj_matrix[i][j]
+                        min_edge = (i, j)
 
         self.result_edge.append(min_edge)
         return min_edge, min_weight
@@ -75,15 +66,11 @@ class kruskalalgorithm:
             self.update(a, b, min_weight)
             total_weight += min_weight
 
-
         return self.result_matrix, total_weight
-
-
 
 numbers = range(25, 201, 25) #вказує на кількість вершин в графі
 density = [0.5, 0.6, 0.7, 0.8, 0.9, 1] #вказує на щільність
 k = 10 #вказує на проміжок, в якому буде генеруватися вага для ребер
-
 
 for n in numbers:
     for p in density:
@@ -98,7 +85,6 @@ for n in numbers:
             avrg_time += elapsed_time
         avrg_time /= 20
         print(f"size: {n}, density: {p}, average time: {avrg_time:.6f} s")
-
 
 
 
