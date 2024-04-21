@@ -1,8 +1,5 @@
 import numpy as np
-
-n = 5  #вказує на кількість вершин в графі
-p = 1#вказує на щільність
-k = 10 #вказує на проміжок, в якому буде генеруватися вага для ребер
+import time
 
 def generate_matrix(n, p, k):
     adj_matrix = np.zeros((n, n), dtype=int)
@@ -14,18 +11,7 @@ def generate_matrix(n, p, k):
 
     return adj_matrix
 
-adj_matrix = generate_matrix(n, p, k)
 
-
-"""
-adj_matrix = np.array([[0, 3, 0, 0, 0],
-              [3, 0, 5, 7, 0],
-              [0, 5, 0, 9, 8],
-              [0, 7, 9, 0, 6],
-              [0, 0, 8, 6, 0]])
-"""
-
-print(adj_matrix)
 
 class kruskalalgorithm:
     def __init__(self, adj_matrix, n):
@@ -47,8 +33,6 @@ class kruskalalgorithm:
                             min_weight = self.adj_matrix[i][j]
                             min_edge = (i, j)
 
-
-
                 else:
                     if not (self.visited[i] and self.visited[j]) and self.adj_matrix[i][j] != 0:
                         if self.adj_matrix[i][j] < min_weight:
@@ -56,15 +40,13 @@ class kruskalalgorithm:
                             min_edge = (i, j)
 
         self.result_edge.append(min_edge)
-        print(min_weight)
-        print(min_edge)
         return min_edge, min_weight
 
-    def union(self, x, y, min_weight):
-        self.visited[x] = True
-        self.visited[y] = True
+    def update(self, a, b, min_weight):
+        self.visited[a] = True
+        self.visited[b] = True
 
-        self.result_matrix[x][y] = self.result_matrix[y][x] = min_weight
+        self.result_matrix[a][b] = self.result_matrix[b][a] = min_weight
 
     def dfs(self, visited, start):
         stack = [start]
@@ -79,7 +61,6 @@ class kruskalalgorithm:
     def сonnectivity(self):
         visited = [False] * self.len
         self.dfs(visited, 0)
-        print(all(visited))
         return all(visited)
 
     def kruskal(self):
@@ -90,8 +71,8 @@ class kruskalalgorithm:
             if min_edge is None:
                 break
 
-            x, y = min_edge
-            self.union(x, y, min_weight)
+            a, b = min_edge
+            self.update(a, b, min_weight)
             total_weight += min_weight
 
 
@@ -99,10 +80,27 @@ class kruskalalgorithm:
 
 
 
-kruskal_init = kruskalalgorithm(adj_matrix, n)
-result_matrix, total_weight = kruskal_init.kruskal()
+numbers = range(25, 201, 25) #вказує на кількість вершин в графі
+density = [0.5, 0.6, 0.7, 0.8, 0.9, 1] #вказує на щільність
+k = 10 #вказує на проміжок, в якому буде генеруватися вага для ребер
 
-print("Total weight:", total_weight)
-print("Result matrix:")
-print(result_matrix)
+
+for n in numbers:
+    for p in density:
+        avrg_time = 0
+        for i in range(20):
+            adj_matrix = generate_matrix(n, p, k)
+            start_time = time.time()
+            kruskal_init = kruskalalgorithm(adj_matrix, n)
+            result_matrix, total_weight = kruskal_init.kruskal()
+
+            elapsed_time = time.time() - start_time
+            avrg_time += elapsed_time
+        avrg_time /= 20
+        print(f"size: {n}, density: {p}, average time: {avrg_time:.6f} s")
+
+
+
+
+
 
